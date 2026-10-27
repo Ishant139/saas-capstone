@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --ink: #1c2530; --accent: #0f766e; --paper: #f6f7f4; }
+
+body { background: var(--paper); color: var(--ink); font-family: 'Segoe UI', system-ui, sans-serif; }
+
+/* Plain CSS: custom properties, flexbox, grid, pseudo-classes, transitions */
+.plan-card { transition: border-color .15s ease, transform .15s ease; border: 2px solid #dfe3dc; border-radius: 10px; background: #fff; }
+.plan-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.plan-card.is-current { border-color: var(--accent); background: #f0f8f6; }
+.usage-bar { height: 12px; border-radius: 6px; background: #e4e8e1; overflow: hidden; }
+.usage-bar > span { display: block; height: 100%; background: var(--accent); transition: width .3s ease; }
+.usage-bar.is-full > span { background: #b42318; }
+:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
