@@ -1,48 +1,133 @@
-# Teamdesk - subscription SaaS capstone
 
-Teams, roles, plans, usage quotas and feature flags on a MERN stack, with Docker + CI.
+# Teamdesk — Subscription-Based SaaS Platform
 
-## Run it
-```bash
-# 1) API + MongoDB (needs Mongo running locally, or use docker compose below)
-cd server && cp .env.example .env && npm install
-npm run seed        # creates feature flags
-npm run dev         # http://localhost:5000/healthz
-npm test
+Teamdesk is a multi-organisation SaaS application that provides team management, role-based access control, subscription plans, usage metering, and feature gating.
 
-# 2) React app
-cd ../client && npm install && npm run dev    # http://localhost:5173
+## Features
 
-# 3) Everything in containers (production-like)
-cp .env.example .env     # set JWT_SECRET
-docker compose up --build   # http://localhost:8080
+- User authentication and protected API routes
+- Organisation creation and management
+- Team member management and role assignment
+- Free, Pro, and Business subscription plans
+- API usage tracking and quota enforcement
+- Plan-based feature flags
+- Docker-based deployment with Docker Compose
+- Nginx frontend delivery and API routing
+- Automated backend tests and frontend build
+- GitHub Actions CI/CD workflow
+- Health, readiness, metrics, and application logging endpoints
+
+## Technology Stack
+
+- Frontend: React and Vite
+- Backend: Node.js and Express
+- Database: MongoDB and Mongoose
+- Authentication: JWT
+- Deployment: Docker, Docker Compose, Nginx
+- Testing: Jest and Supertest
+- CI/CD: GitHub Actions
+- Logging and metrics: Pino and Prometheus client
+
+## Project Structure
+
+```text
+saas-capstone/
+├── client/                 # React frontend
+├── server/                 # Express API
+├── docker-compose.yml      # Local multi-container setup
+├── .github/workflows/      # CI/CD workflows
+└── README.md               # Project documentation
 ```
-Run `npm install` in both folders once so `package-lock.json` exists (CI uses `npm ci`).
 
-## Where each syllabus concept is used
-| Concept | File(s) |
-|---|---|
-| Promises, `Promise.all` | `server/src/controllers/org.controller.js` (list, remove), `utils/asyncHandler.js` |
-| async/await + try/catch | `client/src/api/client.js`, `components/PlanButton.jsx`, all controllers |
-| Destructuring, spread, map/filter/reduce, optional chaining | `org.controller.js`, `usage.controller.js`, `AuthPage.jsx` |
-| NPM (scripts, deps, devDeps) | both `package.json` files |
-| CSS (variables, flex, grid, transitions, pseudo-classes) | `client/src/index.css` |
-| Bootstrap | grid, navbar, forms, buttons across all components |
-| Tailwind | utility classes in `Navbar`, `PlanCard`, `AuthPage` (preflight disabled to coexist with Bootstrap) |
-| React hooks (all) | `pages/HooksLab.jsx`, `context/AuthContext.jsx`, `hooks/useFetch.js` |
-| Props + prop drilling | `Dashboard -> PlanSection -> PlanCard -> PlanButton` |
-| API fetching | `hooks/useFetch.js` (loading/error/abort), `api/client.js` |
-| CRUD | Organisations: `org.routes.js` + `OrgForm` / `OrgList` |
-| CORS | `server/src/app.js` |
-| Middleware | `middleware/` (auth, validate, quota, errorHandler), request-id + logging in `app.js` |
-| Validation | Zod in `validators/schemas.js` + `middleware/validate.js` |
-| Routing + folder structure | `server/src/routes`, `controllers`, `models`, `middleware` |
+## Run Locally
 
-## Done so far (~40%)
-- Auth (JWT), teams, memberships and roles, invites, plan gating, mock billing with trial, usage quota (429), feature flags
-- `/healthz`, `/readyz`, `/metrics`, structured logs with request id, graceful shutdown
-- Jest + Supertest tests, multi-stage Dockerfiles (non-root API), docker-compose, GitHub Actions CI + Trivy scan
+### Prerequisites
 
-## Still to do
-Email verification / password reset / 2FA, real Stripe + webhook, Redis + BullMQ worker, admin console,
-TLS + certbot, SSH deploy + rollback, Sentry, backups + restore test, k6 load test, runbook, staging/prod environments.
+- Node.js and npm
+- Docker Desktop
+- Git
+
+### Run with Docker Compose
+
+Create the required environment configuration using the variables expected by your application and Compose file.
+
+Do not commit secrets or production credentials.
+
+Start the application:
+
+```bash
+docker compose up --build -d
+```
+
+Open the application at:
+
+http://localhost:8080
+
+### Run Backend Tests
+
+```bash
+cd server
+npm ci
+npm test
+```
+
+### Run Frontend Development Server
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+Open the Vite URL printed in the terminal, usually:
+
+http://localhost:5173
+
+## Monitoring Endpoints
+
+When exposed by the current deployment configuration:
+
+- `/healthz` — basic API health check
+- `/readyz` — application and database readiness
+- `/metrics` — Prometheus-format metrics
+
+Inspect Docker containers:
+
+```bash
+docker compose ps
+```
+
+Inspect API logs:
+
+```bash
+docker compose logs --tail=100 api
+```
+
+Follow logs continuously:
+
+```bash
+docker compose logs -f api
+```
+
+## CI/CD
+
+The GitHub Actions workflow runs backend tests, builds the frontend, and builds and scans the API Docker image.
+
+Review workflow results in the GitHub repository's Actions tab.
+
+## Current Limitations
+
+- Subscription payment processing with Stripe is not yet implemented.
+- Invitations currently use a simplified existing-account workflow.
+- Account settings and administration features may require further implementation.
+- Production TLS, backup restoration, deployment rollback, and load testing require additional validation.
+
+## Future Improvements
+
+- Stripe subscriptions and webhook handling
+- Email-based invitations and password recovery
+- Administrator console
+- Production HTTPS and deployment rollback
+- Automated database backup and restore
+- Expanded security tests and load testing
+- Production monitoring and alerting
