@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 // Bootstrap navbar + Tailwind utility classes mixed together.
 export default function Navbar({ page, onNavigate }) {
   const { user, logout } = useAuth();
-  const tabs = [['dashboard', 'Dashboard'], ['hooks', 'Hooks lab']];
+  const tabs = [['dashboard', 'Dashboard']];
 
   return (
     <nav className="navbar navbar-expand bg-white border-bottom px-3">
