@@ -1,133 +1,172 @@
+# Teamdesk — SaaS Subscription & Deployment Platform
 
-# Teamdesk — Subscription-Based SaaS Platform
+Teamdesk is a multi-tenant SaaS application built to demonstrate application development, containerized deployment, automated testing, CI/CD, monitoring, and database recovery.
 
-Teamdesk is a multi-organisation SaaS application that provides team management, role-based access control, subscription plans, usage metering, and feature gating.
+The platform allows users to create organisations, manage team members, view subscription plans, and monitor usage. The project also includes health-check endpoints, runtime metrics, and a MongoDB backup-and-restore workflow.
+
+> **Project status:** Development capstone. Core application, Docker deployment, automated tests, monitoring endpoints, and a manual backup-and-restore workflow have been implemented and tested. Some production-readiness features remain future work.
+
+---
+
+## Table of Contents
+
+1. [Project Overview](#project-overview)
+2. [Objectives](#objectives)
+3. [Features](#features)
+4. [Technology Stack](#technology-stack)
+5. [Architecture](#architecture)
+6. [Project Structure](#project-structure)
+7. [Prerequisites](#prerequisites)
+8. [Getting Started](#getting-started)
+9. [Docker Deployment](#docker-deployment)
+10. [Environment Configuration](#environment-configuration)
+11. [API Endpoints](#api-endpoints)
+12. [Authentication and Access Control](#authentication-and-access-control)
+13. [Subscription Plans and Usage](#subscription-plans-and-usage)
+14. [Automated Testing](#automated-testing)
+15. [CI/CD Pipeline](#cicd-pipeline)
+16. [Monitoring and Health Checks](#monitoring-and-health-checks)
+17. [Database Backup and Recovery](#database-backup-and-recovery)
+18. [Security Considerations](#security-considerations)
+19. [Validation Results](#validation-results)
+20. [Known Limitations](#known-limitations)
+21. [Future Improvements](#future-improvements)
+22. [Author](#author)
+
+---
+
+## Project Overview
+
+Modern SaaS applications require more than a working user interface. They need reliable deployment, secure access control, automated testing, monitoring, and data recovery procedures.
+
+Teamdesk combines a web application with a containerized backend infrastructure. Docker Compose runs the application services, while GitHub Actions provides a CI/CD workflow for building and validating the project.
+
+The project focuses on learning and demonstrating the foundations of deploying and operating a SaaS application.
+
+## Objectives
+
+- Develop a web-based SaaS dashboard.
+- Implement authentication and organisation-based access control.
+- Manage teams, roles, subscription plans, and usage limits.
+- Containerize the frontend, backend, and database.
+- Automate application checks through CI/CD.
+- Expose health, readiness, and runtime metrics endpoints.
+- Create and verify MongoDB backups and recovery procedures.
+- Document deployment, validation, and remaining production work.
 
 ## Features
 
-- User authentication and protected API routes
-- Organisation creation and management
-- Team member management and role assignment
-- Free, Pro, and Business subscription plans
-- API usage tracking and quota enforcement
-- Plan-based feature flags
-- Docker-based deployment with Docker Compose
-- Nginx frontend delivery and API routing
-- Automated backend tests and frontend build
-- GitHub Actions CI/CD workflow
-- Health, readiness, metrics, and application logging endpoints
+### Application Features
+
+- User registration and login.
+- Organisation creation and management.
+- Team member management and role assignment.
+- Subscription plan selection.
+- Usage tracking and quotas.
+- Feature availability based on plans.
+- Billing and subscription status display.
+- Admin overview of organisations available to the logged-in user.
+
+### Deployment and Reliability Features
+
+- Docker-based application deployment.
+- Docker Compose service orchestration.
+- Automated backend tests.
+- Frontend production build.
+- GitHub Actions CI/CD workflow.
+- Container health checks.
+- API health and readiness endpoints.
+- Prometheus-format Node.js runtime metrics.
+- Structured HTTP request logging.
+- MongoDB backup script.
+- Timestamped local database backups.
+- Backup log and non-empty file validation.
+- Restore testing using a separate MongoDB database.
+
+---
 
 ## Technology Stack
 
-- Frontend: React and Vite
-- Backend: Node.js and Express
-- Database: MongoDB and Mongoose
-- Authentication: JWT
-- Deployment: Docker, Docker Compose, Nginx
-- Testing: Jest and Supertest
-- CI/CD: GitHub Actions
-- Logging and metrics: Pino and Prometheus client
+| Component | Technology |
+|---|---|
+| Frontend | React |
+| Frontend build tool | Vite |
+| Backend | Node.js and Express |
+| Database | MongoDB |
+| Database ODM | Mongoose |
+| Authentication | JSON Web Tokens (JWT) |
+| Request validation | Zod |
+| Logging | Pino and HTTP request logging |
+| Containerization | Docker |
+| Service orchestration | Docker Compose |
+| CI/CD | GitHub Actions |
+| Security scanning | Trivy |
+| Backup tooling | `mongodump` and `mongorestore` |
+| Backup automation script | PowerShell |
+
+---
+
+## Architecture
+
+```text
+                    User / Browser
+                          |
+                          v
+                 React + Vite Frontend
+                          |
+                     HTTP / API
+                          |
+                          v
+                  Express REST API
+                          |
+             +------------+------------+
+             |            |            |
+             v            v            v
+       Authentication  Organisations  Billing
+       and JWT          and Members    and Usage
+             |            |            |
+             +------------+------------+
+                          |
+                          v
+                    MongoDB Database
+                          |
+                          v
+                Backup and Restore Tools
+```
+
+### Deployment Architecture
+
+```text
+GitHub Repository
+       |
+       v
+GitHub Actions
+       |
+       +--> Backend Tests
+       |
+       +--> Frontend Build
+       |
+       +--> Docker Image Build
+       |
+       +--> Security Scan
+       |
+       v
+Docker Compose
+       |
+       +--> Web / Nginx
+       +--> Node.js API
+       +--> MongoDB
+```
+
+The diagram represents the intended CI/CD and deployment flow. The workflow has passed previously, but the latest run should be checked before claiming every job is currently green.
+
+---
 
 ## Project Structure
 
 ```text
 saas-capstone/
-├── client/                 # React frontend
-├── server/                 # Express API
-├── docker-compose.yml      # Local multi-container setup
-├── .github/workflows/      # CI/CD workflows
-└── README.md               # Project documentation
-```
-
-## Run Locally
-
-### Prerequisites
-
-- Node.js and npm
-- Docker Desktop
-- Git
-
-### Run with Docker Compose
-
-Create the required environment configuration using the variables expected by your application and Compose file.
-
-Do not commit secrets or production credentials.
-
-Start the application:
-
-```bash
-docker compose up --build -d
-```
-
-Open the application at:
-
-http://localhost:8080
-
-### Run Backend Tests
-
-```bash
-cd server
-npm ci
-npm test
-```
-
-### Run Frontend Development Server
-
-```bash
-cd client
-npm install
-npm run dev
-```
-
-Open the Vite URL printed in the terminal, usually:
-
-http://localhost:5173
-
-## Monitoring Endpoints
-
-When exposed by the current deployment configuration:
-
-- `/healthz` — basic API health check
-- `/readyz` — application and database readiness
-- `/metrics` — Prometheus-format metrics
-
-Inspect Docker containers:
-
-```bash
-docker compose ps
-```
-
-Inspect API logs:
-
-```bash
-docker compose logs --tail=100 api
-```
-
-Follow logs continuously:
-
-```bash
-docker compose logs -f api
-```
-
-## CI/CD
-
-The GitHub Actions workflow runs backend tests, builds the frontend, and builds and scans the API Docker image.
-
-Review workflow results in the GitHub repository's Actions tab.
-
-## Current Limitations
-
-- Subscription payment processing with Stripe is not yet implemented.
-- Invitations currently use a simplified existing-account workflow.
-- Account settings and administration features may require further implementation.
-- Production TLS, backup restoration, deployment rollback, and load testing require additional validation.
-
-## Future Improvements
-
-- Stripe subscriptions and webhook handling
-- Email-based invitations and password recovery
-- Administrator console
-- Production HTTPS and deployment rollback
-- Automated database backup and restore
-- Expanded security tests and load testing
-- Production monitoring and alerting
+├── client/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── components
