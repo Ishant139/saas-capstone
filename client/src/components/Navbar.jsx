@@ -10,12 +10,14 @@ export default function Navbar({ page, onNavigate }) {
     ['billing', 'Billing & Plans'],
     ['usage', 'Usage & Analytics'],
     ['settings', 'Account Settings'],
+    ['admin', 'Admin Overview'],
   ];
 
   return (
     <nav className="navbar navbar-expand-lg bg-white border-bottom px-3 py-3">
       <div className="container-fluid">
         <button
+          type="button"
           className="navbar-brand fw-bold border-0 bg-transparent"
           style={{ color: 'var(--accent)' }}
           onClick={() => onNavigate('dashboard')}
@@ -44,6 +46,7 @@ export default function Navbar({ page, onNavigate }) {
           <div className="d-flex align-items-center gap-3 ms-auto ps-3">
             <span className="small text-secondary">{user.name}</span>
             <button
+              type="button"
               className="btn btn-sm btn-outline-danger"
               onClick={logout}
             >

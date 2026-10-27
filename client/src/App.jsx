@@ -6,6 +6,7 @@ import AuthPage from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
 import BillingPage from './pages/BillingPage';
 import UsagePage from './pages/UsagePage';
+import AdminPage from './pages/AdminPage';
 import MembersPanel from './components/MembersPanel';
 import { useFetch } from './hooks/useFetch';
 
@@ -119,6 +120,7 @@ export default function App() {
         description="Manage your profile and account preferences."
       />
     ),
+    admin: <AdminPage />,
   };
 
   return (
